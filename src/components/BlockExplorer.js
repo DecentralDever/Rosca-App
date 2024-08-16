@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { aggregateTransactions } from '../utils/fetchTransactions';
+import { ethers } from 'ethers';
 
 const BlockExplorer = ({ walletAddress }) => {
   const [transactions, setTransactions] = useState([]);
@@ -31,20 +32,26 @@ const BlockExplorer = ({ walletAddress }) => {
           {transactions.map((tx) => (
             <tr key={tx.hash}>
               <td className="py-2 px-4 border-b border-gray-200">
-                <a
-                  href={`https://etherscan.io/tx/${tx.hash}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 underline"
-                >
-                  {tx.hash.slice(0, 10)}...
-                </a>
+                {tx.hash ? (
+                  <a
+                    href={`https://etherscan.io/tx/${tx.hash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 underline"
+                  >
+                    {tx.hash.slice(0, 10)}...
+                  </a>
+                ) : (
+                  'N/A'
+                )}
               </td>
-              <td className="py-2 px-4 border-b border-gray-200">{tx.blockNumber}</td>
-              <td className="py-2 px-4 border-b border-gray-200">{tx.from.slice(0, 6)}...</td>
-              <td className="py-2 px-4 border-b border-gray-200">{tx.to.slice(0, 6)}...</td>
-              <td className="py-2 px-4 border-b border-gray-200">{ethers.formatEther(tx.value)} ETH</td>
-              <td className="py-2 px-4 border-b border-gray-200">{new Date(tx.timeStamp * 1000).toLocaleDateString()}</td>
+              <td className="py-2 px-4 border-b border-gray-200">{tx.blockNumber || 'N/A'}</td>
+              <td className="py-2 px-4 border-b border-gray-200">{tx.from ? tx.from.slice(0, 6) + '...' : 'N/A'}</td>
+              <td className="py-2 px-4 border-b border-gray-200">{tx.to ? tx.to.slice(0, 6) + '...' : 'N/A'}</td>
+              <td className="py-2 px-4 border-b border-gray-200">{tx.value ? ethers.formatEther(tx.value) + ' ETH' : 'N/A'}</td>
+              <td className="py-2 px-4 border-b border-gray-200">
+                {tx.timeStamp ? new Date(tx.timeStamp * 1000).toLocaleDateString() : 'N/A'}
+              </td>
             </tr>
           ))}
         </tbody>
