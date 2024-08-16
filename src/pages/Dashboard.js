@@ -7,6 +7,7 @@ import ConfirmationModal from '../components/ConfirmationModal';
 import TransactionHistory from '../components/TransactionHistory';
 import MembersList from '../components/MembersList';
 import ContributionChart from '../components/ContributionChart';
+import BlockExplorer from '../components/BlockExplorer';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -17,15 +18,6 @@ const rpcUrls = {
   base: "https://base.llamarpc.com",
   optimism: "https://optimism.llamarpc.com"
   // Add more chains as needed
-};
-
-const explorerUrls = {
-  scroll: "https://scroll.io/address/",
-  linea: "https://lineascan.build/address/",
-  arbitrum: "https://arbiscan.io/address/",
-  base: "https://basescan.org/address/",
-  optimism: "https://optimistic.etherscan.io/address/"
-  // Add more explorers as needed
 };
 
 const chainLogos = {
@@ -161,14 +153,6 @@ const Dashboard = () => {
                 <li key={chain} className="flex items-center space-x-2 text-gray-600">
                   <img src={chainLogos[chain]} alt={`${chain} logo`} className="w-6 h-6" />
                   <span>{chain.charAt(0).toUpperCase() + chain.slice(1)}: {balance} ETH</span>
-                  <a
-                    href={`${explorerUrls[chain]}${walletAddress}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 underline ml-2"
-                  >
-                    View on Explorer
-                  </a>
                 </li>
               ))}
             </ul>
@@ -217,6 +201,9 @@ const Dashboard = () => {
 
       {walletAddress && (
         <>
+          {/* Combined Block Explorer */}
+          <BlockExplorer walletAddress={walletAddress} />
+
           {/* Transaction History */}
           <TransactionHistory transactions={transactions} />
 
