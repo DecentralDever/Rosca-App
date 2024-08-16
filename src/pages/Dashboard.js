@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { connectWallet } from '../utils/wallet';
 import { motion } from 'framer-motion';
@@ -10,9 +10,36 @@ import ContributionChart from '../components/ContributionChart';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const rpcUrls = {
+  scroll: "https://rpc.scroll.io",
+  linea: "https://rpc.linea.build",
+  arbitrum: "https://arbitrum.llamarpc.com",
+  base: "https://base.llamarpc.com",
+  optimism: "https://optimism.llamarpc.com"
+  // Add more chains as needed
+};
+
+const explorerUrls = {
+  scroll: "https://scroll.io/address/",
+  linea: "https://lineascan.build/address/",
+  arbitrum: "https://arbiscan.io/address/",
+  base: "https://basescan.org/address/",
+  optimism: "https://optimistic.etherscan.io/address/"
+  // Add more explorers as needed
+};
+
+const chainLogos = {
+  scroll: "/logos/scroll-logo-.png",
+  linea: "/logos/linea-logo.png",
+  arbitrum: "/logos/arbitrum-logo.png",
+  base: "/logos/base-logo.png",
+  optimism: "/logos/optimism-logo.png"
+  // Add more logos as needed
+};
+
 const Dashboard = () => {
   const [walletAddress, setWalletAddress] = useState("");
-  const [balance, setBalance] = useState("");
+  const [chainBalances, setChainBalances] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
@@ -23,11 +50,27 @@ const Dashboard = () => {
     const { signer, provider } = await connectWallet();
     if (signer) {
       const address = await signer.getAddress();
-      const balance = await provider.getBalance(address);
       setWalletAddress(address);
-      setBalance(ethers.formatEther(balance));
+      await fetchBalances(address); // Fetch balances after connecting the wallet
     }
     setIsLoading(false);
+  };
+
+  const fetchBalances = async (address) => {
+    const balances = {};
+
+    for (const [chain, rpcUrl] of Object.entries(rpcUrls)) {
+      try {
+        const provider = new ethers.JsonRpcProvider(rpcUrl);
+        const balance = await provider.getBalance(address);
+        balances[chain] = ethers.formatEther(balance);
+      } catch (error) {
+        console.error(`Failed to fetch balance for ${chain}:`, error);
+        balances[chain] = "Error";
+      }
+    }
+
+    setChainBalances(balances);
   };
 
   const openModal = (message) => {
@@ -112,7 +155,23 @@ const Dashboard = () => {
             <FaWallet className="text-4xl text-blue-600 mb-4" />
             <h2 className="text-2xl font-semibold text-gray-800">Wallet Information</h2>
             <p className="mt-4 text-gray-600">Address: {walletAddress}</p>
-            <p className="text-gray-600">Balance: {balance} ETH</p>
+            <h3 className="text-xl font-semibold text-gray-800 mt-4">Balances by Chain:</h3>
+            <ul className="mt-2">
+              {Object.entries(chainBalances).map(([chain, balance]) => (
+                <li key={chain} className="flex items-center space-x-2 text-gray-600">
+                  <img src={chainLogos[chain]} alt={`${chain} logo`} className="w-6 h-6" />
+                  <span>{chain.charAt(0).toUpperCase() + chain.slice(1)}: {balance} ETH</span>
+                  <a
+                    href={`${explorerUrls[chain]}${walletAddress}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 underline ml-2"
+                  >
+                    View on Explorer
+                  </a>
+                </li>
+              ))}
+            </ul>
           </motion.div>
 
           {/* ROSCA Stats */}
