@@ -7,6 +7,7 @@ import ConfirmationModal from '../components/ConfirmationModal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ContributionChart from '../components/ContributionChart';
 
 
 const Dashboard = () => {
@@ -16,6 +17,22 @@ const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const contributionPercentage = 83.2; 
+  const contributionData = [
+    { date: '2024-07-01', amount: 1.2 },
+    { date: '2024-07-08', amount: 2.3 },
+    { date: '2024-07-15', amount: 1.8 },
+    // Add more data points as needed
+  ];
+  
+  return (
+    <div className="p-6 bg-gray-100 min-h-screen">
+      {/* Other components */}
+      
+      <ContributionChart data={contributionData} />
+  
+      {/* Other components */}
+    </div>
+  );
 
   useEffect(() => {
     const loadWalletData = async () => {
