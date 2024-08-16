@@ -6,11 +6,11 @@ ChartJS.register(LineElement, PointElement, LinearScale, Title, Tooltip, Categor
 
 const ContributionChart = ({ data }) => {
   const chartData = {
-    labels: data.map(entry => entry.date), // X-axis labels (e.g., dates)
+    labels: data.map(entry => entry.date),
     datasets: [
       {
         label: 'Contributions',
-        data: data.map(entry => entry.amount), // Y-axis data (e.g., contribution amounts)
+        data: data.map(entry => entry.amount),
         fill: false,
         backgroundColor: 'rgb(75, 192, 192)',
         borderColor: 'rgba(75, 192, 192, 0.2)',
