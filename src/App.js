@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Navbar from './components/Navbar'; // Import the Navbar component
-import Dashboard from './pages/Dashboard'; // Import the Dashboard component
+import Dashboard from './pages/Dashboard'; // Assuming you already have a Dashboard page
+import EducationPage from './pages/EducationPage';
+import Navbar from './components/Navbar';
 
 const App = () => {
   return (
@@ -10,6 +11,8 @@ const App = () => {
         <Navbar />
         <Routes>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/education" element={<EducationPage />} />
+          {/* Add more routes as needed */}
         </Routes>
       </div>
     </Router>
